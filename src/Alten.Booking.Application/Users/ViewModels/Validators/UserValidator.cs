@@ -2,7 +2,7 @@ using Alten.Booking.Application.Base.Models;
 using Alten.Booking.Domain.Users.Entities;
 using FluentValidation;
 
-namespace Alten.Booking.Application.Users.Models.Validators;
+namespace Alten.Booking.Application.Users.ViewModels.Validators;
 
 public class UserValidator : ModelValidator<User>
 {

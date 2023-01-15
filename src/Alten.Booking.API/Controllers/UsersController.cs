@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Alten.Booking.Application.Users.Commands;
-using Alten.Booking.Application.Users.Models;
 using Alten.Booking.Application.Users.Queries.Interfaces;
+using Alten.Booking.Application.Users.ViewModels;
 using Alten.Booking.Core.Mediator.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
         _userQueries = userQueries;
     }
 
-    [HttpGet("{id:int}", Name = "GetById")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetById(int id)
@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
         return NotFound();
     }
 
-    [HttpGet(Name = "GetActives")]
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UserViewModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetActives()
@@ -45,6 +45,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task Post([FromBody] UserViewModel user) =>
-        await _mediatorHandler.SendCommand(new AddUserCommand(user));
+    public async Task Post([FromBody] UserViewModel newUser) =>
+        await _mediatorHandler.SendCommand(new AddUserCommand(newUser));
 }

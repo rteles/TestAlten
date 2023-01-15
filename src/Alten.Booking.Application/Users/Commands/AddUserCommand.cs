@@ -1,4 +1,4 @@
-using Alten.Booking.Application.Users.Models;
+using Alten.Booking.Application.Users.ViewModels;
 using Alten.Booking.Core.Messages;
 
 namespace Alten.Booking.Application.Users.Commands;

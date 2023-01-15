@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Alten.Booking.Core\Alten.Booking.Core.csproj" />
     <ProjectReference Include="..\Alten.Booking.Domain\Alten.Booking.Domain.csproj" />
+    <ProjectReference Include="..\Alten.Booking.Infra\Alten.Booking.Infra.csproj" />
   </ItemGroup>
 
   <ItemGroup>

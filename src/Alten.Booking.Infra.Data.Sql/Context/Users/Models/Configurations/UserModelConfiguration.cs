@@ -7,28 +7,28 @@ public class UserModelConfiguration : IEntityTypeConfiguration<UserModel>
 {
     public void Configure(EntityTypeBuilder<UserModel> builder)
     {
-        builder.HasKey(o => o.Id);
+        builder.HasKey(_ => _.Id);
 
-        builder.Property(o => o.Name)
+        builder.Property(_ => _.Name)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(o => o.LastName)
-            .IsRequired(false)
+        builder.Property(_ => _.LastName)
+            .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(o => o.BirthDate)
+        builder.Property(_ => _.BirthDate)
             .IsRequired();
 
-        builder.Property(o => o.Cpf)
+        builder.Property(_ => _.Cpf)
             .IsRequired()
             .HasMaxLength(14);
         
-        builder.Property(o => o.Email)
+        builder.Property(_ => _.Email)
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(o => o.Active)
+        builder.Property(_ => _.Active)
             .IsRequired();
 
         builder.ToTable("Users");

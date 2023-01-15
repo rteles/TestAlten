@@ -1,6 +1,7 @@
-using Alten.Booking.Application.Users.Models;
 using Alten.Booking.Application.Users.Queries.Interfaces;
+using Alten.Booking.Application.Users.ViewModels;
 using Alten.Booking.Domain.Users.Repositories;
+using Alten.Booking.Infra.Adapters.Logger;
 using AutoMapper;
 
 namespace Alten.Booking.Application.Users.Queries;
@@ -8,11 +9,13 @@ namespace Alten.Booking.Application.Users.Queries;
 public class UserQueries : IUserQueries
 {
     private readonly IMapper _mapper;
+    private readonly ILogAdapter _logAdapter;
     private readonly IUserRepository _userRepository;
 
-    public UserQueries(IMapper mapper, IUserRepository userRepository)
+    public UserQueries(IMapper mapper, ILogAdapter logAdapter, IUserRepository userRepository)
     {
         _mapper = mapper;
+        _logAdapter = logAdapter;
         _userRepository = userRepository;
     }
 

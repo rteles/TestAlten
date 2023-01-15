@@ -1,5 +1,4 @@
-﻿using Alten.Booking.Core.Mediator.Interfaces;
-using Alten.Booking.Infra.Data.Sql.Base.Interfaces;
+﻿using Alten.Booking.Infra.Data.Sql.Base.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,8 +13,8 @@ public abstract class RepositoryBase<TDomainEntity, TEntityModel> :
     private readonly DbContext _context;
     private readonly IMapper _mapper;
 
-    protected RepositoryBase(DbContext context, IMapper mapper, IMediatorHandler mediatorHandler) 
-        : base(context, mapper, mediatorHandler)
+    protected RepositoryBase(DbContext context, IMapper mapper) 
+        : base(context, mapper)
     {
         _context = context;
         _mapper = mapper;

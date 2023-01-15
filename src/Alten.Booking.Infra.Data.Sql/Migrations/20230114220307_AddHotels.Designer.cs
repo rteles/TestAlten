@@ -4,6 +4,7 @@ using Alten.Booking.Infra.Data.Sql.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Alten.Booking.Infra.Data.Sql.Migrations
 {
     [DbContext(typeof(HotelBookingContext))]
-    partial class HotelBookingContextModelSnapshot : ModelSnapshot
+    [Migration("20230114220307_AddHotels")]
+    partial class AddHotels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,30 +73,6 @@ namespace Alten.Booking.Infra.Data.Sql.Migrations
                     b.ToTable("Hotels", (string)null);
                 });
 
-            modelBuilder.Entity("Alten.Booking.Infra.Data.Sql.Context.Hotels.Models.RoomModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("HotelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<double>("PricePerDay")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HotelId");
-
-                    b.ToTable("Rooms", (string)null);
-                });
-
             modelBuilder.Entity("Alten.Booking.Infra.Data.Sql.Context.Users.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
@@ -137,28 +116,12 @@ namespace Alten.Booking.Infra.Data.Sql.Migrations
                         {
                             Id = 1,
                             Active = true,
-                            BirthDate = new DateTime(1990, 1, 15, 0, 0, 0, 0, DateTimeKind.Local),
+                            BirthDate = new DateTime(1990, 1, 14, 0, 0, 0, 0, DateTimeKind.Local),
                             Cpf = "066.114.819-07",
                             Email = "rogers@email.com",
                             LastName = "Teles",
                             Name = "Roger"
                         });
-                });
-
-            modelBuilder.Entity("Alten.Booking.Infra.Data.Sql.Context.Hotels.Models.RoomModel", b =>
-                {
-                    b.HasOne("Alten.Booking.Infra.Data.Sql.Context.Hotels.Models.HotelModel", "Hotel")
-                        .WithMany("Rooms")
-                        .HasForeignKey("HotelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hotel");
-                });
-
-            modelBuilder.Entity("Alten.Booking.Infra.Data.Sql.Context.Hotels.Models.HotelModel", b =>
-                {
-                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

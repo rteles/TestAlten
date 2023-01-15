@@ -26,14 +26,16 @@ public class AddUserCommandHandler : IRequestHandler<AddUserCommand>
 
     public async Task<Unit> Handle(AddUserCommand command, CancellationToken cancellationToken)
     {
-        var user = _mapper.Map<User>(command.User);
+        var newUser = _mapper.Map<User>(command.User);
 
-        if (_userValidator.IsValid(user, out var errors))
+        if (_userValidator.IsValid(newUser, out var errors))
         {
-            await _userRepository.Add(user);
+            newUser.Active = true;
+            await _userRepository.Add(newUser);
             await _userRepository.Commit();
+            return await Unit.Task;
         }
-        
+
         await _mediatorHandler.SendNotification(cancellationToken, errors.Select(Notification.Create).ToArray());
         return await Unit.Task;
     }

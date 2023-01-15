@@ -16,5 +16,5 @@ public class User : Person
     }
 
     public string Email { get; set; } = string.Empty;
-    public bool Active { get; set; } = true;
+    public bool Active { get; set; }
 }

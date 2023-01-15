@@ -1,4 +1,4 @@
-using Alten.Booking.Application.Users.Models;
+using Alten.Booking.Application.Users.ViewModels;
 
 namespace Alten.Booking.Application.Users.Queries.Interfaces;
 
