@@ -13,6 +13,9 @@ public class RoomModelConfiguration : IEntityTypeConfiguration<RoomModel>
         builder.Property(_ => _.Number)
             .IsRequired();
 
+        builder.Property(_ => _.RoomType)
+            .IsRequired();
+
         builder.Property(_ => _.PricePerDay)
             .IsRequired();
 

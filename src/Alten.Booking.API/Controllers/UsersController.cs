@@ -20,10 +20,10 @@ public class UsersController : ControllerBase
         _userQueries = userQueries;
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = nameof(GetUserById))]
     [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetUserById(int id)
     {
         var result = await _userQueries.Get(id);
         if (result != null)
@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UserViewModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetActives()
+    public async Task<IActionResult> GetActiveUsers()
     {
         var result = await _userQueries.Get(true);
         if (result.Any())
@@ -45,6 +45,6 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task Post([FromBody] UserViewModel newUser) =>
+    public async Task CreateUser([FromBody] UserViewModel newUser) =>
         await _mediatorHandler.SendCommand(new AddUserCommand(newUser));
 }

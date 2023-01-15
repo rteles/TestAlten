@@ -11,9 +11,6 @@ public class DomainToViewModelProfile : Profile
     public DomainToViewModelProfile()
     {
         CreateMap<User, UserViewModel>().ReverseMap();
-
-        // One way would be to add a Parent property to the Child and then do a ForMember(x => x.SomeFlag, opt => opt.MapsFrom(src => src.Parent.SomeFlag).
-
         CreateMap<Hotel, HotelViewModel>()
             .ReverseMap()
             .AfterMap((model, hotel) => hotel.Rooms.ForEach(_ => _.Hotel = hotel));

@@ -3,5 +3,6 @@
 dotnet ef migrations add InitialCreate --startup-project ../Alten.Booking.API
 dotnet ef migrations add AddHotels --startup-project ../Alten.Booking.API
 dotnet ef migrations add AddRooms --startup-project ../Alten.Booking.API
+dotnet ef migrations add AddRoomType --startup-project ../Alten.Booking.API
 
 dotnet ef database update --startup-project ../Alten.Booking.API

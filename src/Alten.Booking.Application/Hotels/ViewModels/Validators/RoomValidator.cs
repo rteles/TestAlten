@@ -13,13 +13,21 @@ public class RoomValidator : ModelValidator<Room>
         RuleFor(_ => _.Hotel)
             .NotNull()
             .WithMessage(_ => $"{nameof(_.Hotel)} can't be null");
-        
+
         RuleFor(_ => _.Number)
             .NotEmpty()
             .WithMessage(_ => $"{nameof(_.Number)} can't be null");
-        
+
         RuleFor(_ => _.PricePerDay)
             .NotEmpty()
             .WithMessage(_ => $"{nameof(_.PricePerDay)} can't be null");
+
+        RuleFor(_ => _.RoomType)
+            .NotEmpty()
+            .WithMessage(_ => $"{nameof(_.RoomType)} can't be null");
+
+        RuleFor(_ => _.RoomType)
+            .IsInEnum()
+            .WithMessage(_ => $"{nameof(_.RoomType)} is invalid");
     }
 }

@@ -1,3 +1,5 @@
-﻿namespace Alten.Booking.Application.Hotels.ViewModels;
+﻿using Alten.Booking.Domain.Hotels.Entities;
 
-public record RoomViewModel(int Number, double PricePerDay);
+namespace Alten.Booking.Application.Hotels.ViewModels;
+
+public record RoomViewModel(int Number, double PricePerDay, RoomType RoomType);

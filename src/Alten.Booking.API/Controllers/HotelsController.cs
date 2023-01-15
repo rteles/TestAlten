@@ -23,7 +23,7 @@ public class HotelsController : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(HotelViewModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetHotelById(int id)
     {
         var result = await _hotelQueries.Get(id);
         if (result != null)
@@ -35,7 +35,7 @@ public class HotelsController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<HotelViewModel>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllHotels()
     {
         var result = await _hotelQueries.GetAll(false);
         if (result.Any())
@@ -45,6 +45,6 @@ public class HotelsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task Post([FromBody] HotelViewModel newHotel) =>
+    public async Task CreateHotel([FromBody] HotelViewModel newHotel) =>
         await _mediatorHandler.SendCommand(new AddHotelCommand(newHotel));
 }
