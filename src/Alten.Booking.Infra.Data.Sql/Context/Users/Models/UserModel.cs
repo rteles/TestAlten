@@ -1,3 +1,5 @@
+using Alten.Booking.Infra.Data.Sql.Context.Bookings.Models;
+
 namespace Alten.Booking.Infra.Data.Sql.Context.Users.Models;
 
 public class UserModel
@@ -23,4 +25,6 @@ public class UserModel
     public DateTime BirthDate { get; init; } = DateTime.MinValue;
     public string Email { get; init; } = string.Empty;
     public bool Active { get; set; }
+    
+    public List<BookingModel> Bookings { get; set; }
 }

@@ -2,4 +2,4 @@
 
 namespace Alten.Booking.Application.Hotels.ViewModels;
 
-public record RoomViewModel(int Number, double PricePerDay, RoomType RoomType);
+public record RoomViewModel(int Id, int Number, double PricePerDay, RoomType RoomType);

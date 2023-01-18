@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Alten.Booking.Application.Hotels.Commands.Handlers;
 
-public class AddHotelCommandHandler : IRequestHandler<AddHotelCommand>
+public class AddHotelCommandHandler : IRequestHandler<AddHotelCommand, bool>
 {
     private readonly IMapper _mapper;
     private readonly IMediatorHandler _mediatorHandler;
@@ -24,7 +24,7 @@ public class AddHotelCommandHandler : IRequestHandler<AddHotelCommand>
         _hotelRepository = hotelRepository;
     }
 
-    public async Task<Unit> Handle(AddHotelCommand command, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AddHotelCommand command, CancellationToken cancellationToken)
     {
         var newHotel = _mapper.Map<Hotel>(command.Hotel);
 
@@ -33,10 +33,10 @@ public class AddHotelCommandHandler : IRequestHandler<AddHotelCommand>
             newHotel.Active = true;
             await _hotelRepository.Add(newHotel);
             await _hotelRepository.Commit();
-            return await Unit.Task;
+            return true;
         }
 
         await _mediatorHandler.SendNotification(cancellationToken, errors.Select(Notification.Create).ToArray());
-        return await Unit.Task;
+        return false;
     }
 }

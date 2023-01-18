@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Alten.Booking.Application.Bookings.Commands;
+using Alten.Booking.Application.Bookings.Queries.Interfaces;
+using Alten.Booking.Application.Bookings.ViewModels;
+using Alten.Booking.Core.Mediator.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Alten.Booking.API.Controllers;
 
@@ -6,47 +11,57 @@ namespace Alten.Booking.API.Controllers;
 [ApiController]
 public class BookingsController : ControllerBase
 {
-    // GET: api/Example/5
-    [HttpGet("{id}", Name = "GetBooking")]
-    public string GetBooking(int id)
+    private readonly IMediatorHandler _mediatorHandler;
+    private readonly IBookingQueries _bookingQueries;
+
+    public BookingsController(IMediatorHandler mediatorHandler, IBookingQueries bookingQueries)
     {
-        return "value";
+        _mediatorHandler = mediatorHandler;
+        _bookingQueries = bookingQueries;
     }
-    
+
     [HttpGet("{roomId}", Name = "GetBookingByRoomId")]
-    public string GetBookingByRoomId(int roomId)
+    [ProducesResponseType(typeof(BookingViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetBookingByRoomId(int roomId)
     {
-        return "value";
+        var result = await _bookingQueries.GetByRoomId(roomId);
+        return result.Any() ? Ok(result) : NotFound();
     }
 
-    [HttpGet("{startDate}/{endDate}", Name = "GetBookingByRangeDate")]
-    public string GetBookingByRangeDate(DateTime startDate, DateTime endDate)
+    [HttpGet("{startDate}/{endDate}", Name = "GetBookingsByRangeDate")]
+    [ProducesResponseType(typeof(BookingViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> GetBookingsByRangeDate(DateTime checkinDate, DateTime checkoutDate)
     {
-        return "value";
+        var result = await _bookingQueries.Get(checkinDate, checkoutDate);
+        return result.Any() ? Ok(result) : NotFound();
     }
-    
-    // // GET: api/Example
-    // [HttpGet(Name = "GetBookings")]
-    // public IEnumerable<string> GetBookings()
-    // {
-    //     return new string[] { "value1", "value2" };
-    // }
-    
-    // POST: api/Example
+
     [HttpPost(Name = "CreateBooking")]
-    public void CreateBooking([FromBody] string value)
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> CreateBooking([FromBody] BookingRoomCommand bookingRoomCommand)
     {
+        var result = await _mediatorHandler.SendCommand(bookingRoomCommand);
+        return result ? Ok() : BadRequest();
     }
 
-    // PUT: api/Example/5
-    [HttpPut("{id}", Name = "ModifyBooking")]
-    public void ModifyBooking(int id, [FromBody] string value)
+    [HttpPut(Name = "ModifyBooking")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> ModifyBooking([FromBody] ModifyBookingCommand modifyBookingCommand)
     {
+        var result = await _mediatorHandler.SendCommand(modifyBookingCommand);
+        return result ? Ok() : BadRequest();
     }
 
-    // DELETE: api/Example/5
     [HttpDelete("{id}", Name = "CancelBooking")]
-    public void CancelBooking(int id)
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> CancelBooking(int id)
     {
+        var result = await _mediatorHandler.SendCommand(new CancelBookingCommand(id));
+        return result ? Ok() : BadRequest();
     }
 }

@@ -1,4 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Alten.Booking.Application.Bookings.Commands;
+using Alten.Booking.Application.Bookings.Commands.Handlers;
+using Alten.Booking.Application.Bookings.Commands.Validators;
+using Alten.Booking.Application.Bookings.Queries;
+using Alten.Booking.Application.Bookings.Queries.Interfaces;
 using Alten.Booking.Application.Hotels.Commands;
 using Alten.Booking.Application.Hotels.Commands.Handlers;
 using Alten.Booking.Application.Hotels.Queries;
@@ -15,12 +20,15 @@ using Alten.Booking.Core.Messages;
 using Alten.Booking.Core.Notifications;
 using Alten.Booking.Core.Notifications.Interfaces;
 using Alten.Booking.Domain.Base;
+using Alten.Booking.Domain.Bookings.Repositories;
+using Alten.Booking.Domain.Bookings.Services;
 using Alten.Booking.Domain.Hotels.Entities;
 using Alten.Booking.Domain.Hotels.Repositories;
 using Alten.Booking.Domain.Users.Entities;
 using Alten.Booking.Domain.Users.Repositories;
 using Alten.Booking.Infra.Adapters.Logger;
 using Alten.Booking.Infra.Data.Sql.Context;
+using Alten.Booking.Infra.Data.Sql.Context.Bookings.Repositories;
 using Alten.Booking.Infra.Data.Sql.Context.Hotels.Repositories;
 using Alten.Booking.Infra.Data.Sql.Context.Users.Repositories;
 using Alten.Booking.Infra.IoC.AutoMapper.Profiles;
@@ -68,7 +76,6 @@ public static class ServicesExtensions
     private static void AddMonitoring(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddTransient<ILogAdapter, SerilogAdapter>();
-        // serviceCollection.AddSingleton<IMetricsRegistry, MetricsRegistry>();
         // serviceCollection.AddTransient<IMonitoringAdapter, MetricsRegistryAdapter>();
     }
 
@@ -86,12 +93,18 @@ public static class ServicesExtensions
         serviceCollection.AddScoped<IModelValidator<Hotel>, HotelValidator>();
         serviceCollection.AddScoped<IModelValidator<Room>, RoomValidator>();
         serviceCollection.AddScoped<IValidator<Room>, RoomValidator>();
+
+        serviceCollection.AddScoped<IModelValidator<BookingRoomCommand>, BookingRoomCommandValidator>();
+        serviceCollection.AddScoped<IModelValidator<ModifyBookingCommand>, ModifyBookingCommandValidator>();
+        serviceCollection.AddScoped<IModelValidator<CancelBookingCommand>, CancelBookingCommandValidator>();
     }
 
     private static void AddRepositories(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IUserRepository, UserRepository>();
         serviceCollection.AddScoped<IHotelRepository, HotelRepository>();
+        serviceCollection.AddScoped<IRoomRepository, RoomRepository>();
+        serviceCollection.AddScoped<IBookingRepository, BookingRepository>();
         serviceCollection.AddScoped<DbContext, HotelBookingContext>();
     }
 
@@ -100,11 +113,16 @@ public static class ServicesExtensions
         //Queries
         serviceCollection.AddScoped<IUserQueries, UserQueries>();
         serviceCollection.AddScoped<IHotelQueries, HotelQueries>();
+        serviceCollection.AddScoped<IBookingQueries, BookingQueries>();
 
         //Commands
-        serviceCollection.AddScoped<IRequestHandler<AddUserCommand, Unit>, AddUserCommandHandler>();
-        serviceCollection.AddScoped<IRequestHandler<AddHotelCommand, Unit>, AddHotelCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<AddUserCommand, bool>, AddUserCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<AddHotelCommand, bool>, AddHotelCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<BookingRoomCommand, bool>, BookingCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<ModifyBookingCommand, bool>, BookingCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<AddHotelCommand, bool>, AddHotelCommandHandler>();
 
-        //Events
+        //Services
+        serviceCollection.AddScoped<IBookingService, BookingService>();
     }
 }

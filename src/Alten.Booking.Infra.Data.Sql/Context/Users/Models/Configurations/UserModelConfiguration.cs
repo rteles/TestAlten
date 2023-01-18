@@ -31,6 +31,10 @@ public class UserModelConfiguration : IEntityTypeConfiguration<UserModel>
         builder.Property(_ => _.Active)
             .IsRequired();
 
+        builder.HasMany(_ => _.Bookings)
+            .WithOne(_ => _.User)
+            .HasForeignKey(_ => _.UserId);
+
         builder.ToTable("Users");
     }
 }

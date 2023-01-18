@@ -26,10 +26,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUserById(int id)
     {
         var result = await _userQueries.Get(id);
-        if (result != null)
-            return Ok(result);
-
-        return NotFound();
+        return result != null ? Ok(result) : NotFound();
     }
 
     [HttpGet]
@@ -38,13 +35,15 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetActiveUsers()
     {
         var result = await _userQueries.Get(true);
-        if (result.Any())
-            return Ok(result);
-
-        return NotFound();
+        return result.Any() ? Ok(result) : NotFound();
     }
 
     [HttpPost]
-    public async Task CreateUser([FromBody] UserViewModel newUser) =>
-        await _mediatorHandler.SendCommand(new AddUserCommand(newUser));
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> CreateUser([FromBody] UserViewModel newUser)
+    {
+        var result = await _mediatorHandler.SendCommand(new AddUserCommand(newUser));
+        return result ? Ok() : BadRequest();
+    }
 }

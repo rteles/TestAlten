@@ -1,4 +1,5 @@
-﻿using Alten.Booking.Infra.Data.Sql.Context.Hotels.Models;
+﻿using Alten.Booking.Infra.Data.Sql.Context.Bookings.Models;
+using Alten.Booking.Infra.Data.Sql.Context.Hotels.Models;
 using Alten.Booking.Infra.Data.Sql.Context.Users.Models;
 using Alten.Booking.Infra.Data.Sql.Context.Users.Seed;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ public class HotelBookingContext : DbContext
     public DbSet<UserModel> Users { get; set; }
     public DbSet<HotelModel> Hotels { get; set; }
     public DbSet<RoomModel> Rooms { get; set; }
+    public DbSet<BookingModel> Bookings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

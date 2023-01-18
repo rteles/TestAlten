@@ -2,7 +2,7 @@
 
 namespace Alten.Booking.Core.Messages;
 
-public class Notification : Message, INotification
+public class Notification : INotification
 {
     public string? Code { get; }
 

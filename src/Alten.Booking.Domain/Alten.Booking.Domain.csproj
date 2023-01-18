@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Alten.Booking.Core\Alten.Booking.Core.csproj" />
+  </ItemGroup>
+
 </Project>

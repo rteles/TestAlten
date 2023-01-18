@@ -1,4 +1,5 @@
-﻿using Alten.Booking.Application.Hotels.ViewModels;
+﻿using Alten.Booking.Application.Bookings.ViewModels;
+using Alten.Booking.Application.Hotels.ViewModels;
 using Alten.Booking.Application.Users.ViewModels;
 using Alten.Booking.Domain.Hotels.Entities;
 using Alten.Booking.Domain.Users.Entities;
@@ -15,5 +16,6 @@ public class DomainToViewModelProfile : Profile
             .ReverseMap()
             .AfterMap((model, hotel) => hotel.Rooms.ForEach(_ => _.Hotel = hotel));
         CreateMap<Room, RoomViewModel>().ReverseMap();
+        CreateMap<Domain.Bookings.Entities.Booking, BookingViewModel>().ReverseMap();
     }
 }

@@ -22,6 +22,10 @@ public class RoomModelConfiguration : IEntityTypeConfiguration<RoomModel>
         builder.HasOne(_ => _.Hotel)
             .WithMany(_ => _.Rooms);
 
+        builder.HasMany(_ => _.Bookings)
+            .WithOne(_ => _.Room)
+            .HasForeignKey(_ => _.RoomId);
+        
         builder.ToTable("Rooms");
     }
 }

@@ -26,10 +26,7 @@ public class HotelsController : ControllerBase
     public async Task<IActionResult> GetHotelById(int id)
     {
         var result = await _hotelQueries.Get(id);
-        if (result != null)
-            return Ok(result);
-
-        return NotFound();
+        return result != null ? Ok(result) : NotFound();
     }
 
     [HttpGet]
@@ -38,13 +35,15 @@ public class HotelsController : ControllerBase
     public async Task<IActionResult> GetAllHotels()
     {
         var result = await _hotelQueries.GetAll(false);
-        if (result.Any())
-            return Ok(result);
-
-        return NotFound();
+        return result.Any() ? Ok(result) : NotFound();
     }
 
     [HttpPost]
-    public async Task CreateHotel([FromBody] HotelViewModel newHotel) =>
-        await _mediatorHandler.SendCommand(new AddHotelCommand(newHotel));
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> CreateHotel([FromBody] HotelViewModel newHotel)
+    {
+        var result = await _mediatorHandler.SendCommand(new AddHotelCommand(newHotel));
+        return result ? Ok() : BadRequest();
+    }
 }
