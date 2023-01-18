@@ -13,14 +13,14 @@ public class ModifyBookingCommandValidator : ModelValidator<ModifyBookingCommand
             .NotEmpty()
             .WithMessage(_ => $"{nameof(_.BookingId)} is invalid");
 
-        RuleFor(_ => _.StartDate)
+        RuleFor(_ => _.CheckinDate)
             .NotEqual(DateTime.MinValue)
             .NotNull()
-            .WithMessage(_ => $"{nameof(_.StartDate)} can't be null");
+            .WithMessage(_ => $"{nameof(_.CheckinDate)} can't be null");
 
-        RuleFor(_ => _.EndDate)
+        RuleFor(_ => _.CheckoutDate)
             .NotEqual(DateTime.MinValue)
             .NotNull()
-            .WithMessage(_ => $"{nameof(_.EndDate)} can't be null");
+            .WithMessage(_ => $"{nameof(_.CheckoutDate)} can't be null");
     }
 }

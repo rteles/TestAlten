@@ -40,7 +40,8 @@ public class BookingCommandHandler :
         {
             if (_bookingRoomCommandValidator.IsValid(command, out var errors))
             {
-                await _bookingService.BookingRoom(command.RoomId, command.UserId, command.StartDate, command.EndDate);
+                await _bookingService.BookingRoom(command.RoomId, command.UserId,
+                    DateOnly.FromDateTime(command.CheckinDate), DateOnly.FromDateTime(command.CheckoutDate));
                 return true;
             }
 
@@ -61,8 +62,9 @@ public class BookingCommandHandler :
         {
             if (_modifyBookingCommandValidator.IsValid(command, out var errors))
             {
-                await _bookingService.ModifyBooking(command.BookingId, command.RoomId, command.StartDate,
-                    command.EndDate);
+                await _bookingService.ModifyBooking(command.BookingId,
+                    DateOnly.FromDateTime(command.CheckinDate),
+                    DateOnly.FromDateTime(command.CheckoutDate));
                 return true;
             }
 

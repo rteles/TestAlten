@@ -1,6 +1,4 @@
-﻿using Alten.Booking.Infra.Data.Sql.Context.Bookings.Models;
-
-namespace Alten.Booking.Infra.Data.Sql.Context.Hotels.Models;
+﻿namespace Alten.Booking.Infra.Data.Sql.Context.Hotels.Models;
 
 public class HotelModel
 {

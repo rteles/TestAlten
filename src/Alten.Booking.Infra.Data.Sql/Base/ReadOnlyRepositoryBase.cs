@@ -1,5 +1,4 @@
-﻿using Alten.Booking.Core.Messages;
-using Alten.Booking.Infra.Data.Sql.Base.Interfaces;
+﻿using Alten.Booking.Infra.Data.Sql.Base.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 

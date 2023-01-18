@@ -13,7 +13,7 @@ public abstract class RepositoryBase<TDomainEntity, TEntityModel> :
     private readonly DbContext _context;
     private readonly IMapper _mapper;
 
-    protected RepositoryBase(DbContext context, IMapper mapper) 
+    protected RepositoryBase(DbContext context, IMapper mapper)
         : base(context, mapper)
     {
         _context = context;
@@ -39,24 +39,21 @@ public abstract class RepositoryBase<TDomainEntity, TEntityModel> :
         if (DetachObj(model))
             _context.Entry(model).State = EntityState.Deleted;
     }
-    
+
     public virtual async Task<bool> Commit() => await _context.SaveChangesAsync() > 0;
 
     #region private
 
     private bool DetachObj(TEntityModel obj)
     {
-        var propKey = (
-            from p in typeof(TDomainEntity).GetProperties()
-            where p.Name.ToUpper().Equals("ID")
-                  && p.PropertyType == typeof(int)
-            select p
-        ).FirstOrDefault();
+        var propKey = typeof(TEntityModel)
+            .GetProperties()
+            .FirstOrDefault(_ => _.Name.ToUpper().Equals("ID") && _.PropertyType == typeof(int));
 
         if (propKey == default)
             return false;
 
-        var entity = _context.Set<TDomainEntity>().Find(propKey.GetValue(obj));
+        var entity = _context.Set<TEntityModel>().Find(propKey.GetValue(obj));
         if (entity == default)
             return false;
 

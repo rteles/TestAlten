@@ -2,7 +2,7 @@
 
 public interface IBookingService
 {
-    Task BookingRoom(int roomId, int userId, DateTime startDate, DateTime endDate);
-    Task ModifyBooking(int id, int roomId, DateTime startDate, DateTime endDate);
+    Task BookingRoom(int roomId, int userId, DateOnly checkinDate, DateOnly checkoutDate);
+    Task ModifyBooking(int id, DateOnly checkinDate, DateOnly checkoutDate);
     Task CancelBooking(int id);
 }

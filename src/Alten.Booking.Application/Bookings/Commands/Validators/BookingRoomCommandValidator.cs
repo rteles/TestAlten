@@ -17,14 +17,14 @@ public class BookingRoomCommandValidator : ModelValidator<BookingRoomCommand>
             .NotEmpty()
             .WithMessage(_ => $"{nameof(_.UserId)} is invalid");
 
-        RuleFor(_ => _.StartDate)
+        RuleFor(_ => _.CheckinDate)
             .NotEqual(DateTime.MinValue)
             .NotNull()
-            .WithMessage(_ => $"{nameof(_.StartDate)} can't be null");
+            .WithMessage(_ => $"{nameof(_.CheckinDate)} can't be null");
 
-        RuleFor(_ => _.EndDate)
+        RuleFor(_ => _.CheckoutDate)
             .NotEqual(DateTime.MinValue)
             .NotNull()
-            .WithMessage(_ => $"{nameof(_.EndDate)} can't be null");
+            .WithMessage(_ => $"{nameof(_.CheckoutDate)} can't be null");
     }
 }

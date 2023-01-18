@@ -22,7 +22,7 @@ public class BookingRepository : RepositoryBase<Domain.Bookings.Entities.Booking
         DateTime checkoutDate)
     {
         var bookings = await _context.Bookings
-            .Where(_ => _.RoomId == roomId && (_.CheckinDate >= checkinDate || _.CheckoutDate <= checkoutDate))
+            .Where(_ => _.RoomId == roomId && _.CheckinDate >= checkinDate && _.CheckoutDate <= checkoutDate)
             .Include(_ => _.Room)
             .Include(_ => _.User)
             .AsNoTracking()
@@ -45,7 +45,7 @@ public class BookingRepository : RepositoryBase<Domain.Bookings.Entities.Booking
     public async Task<IEnumerable<Domain.Bookings.Entities.Booking>> Get(DateTime checkinDate, DateTime checkoutDate)
     {
         var bookings = await _context.Bookings.Where(_ => _.CheckinDate >= checkinDate
-                                                          || _.CheckoutDate <= checkoutDate)
+                                                          && _.CheckoutDate <= checkoutDate)
             .Include(_ => _.Room)
             .Include(_ => _.User)
             .AsNoTracking()

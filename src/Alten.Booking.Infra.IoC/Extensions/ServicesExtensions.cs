@@ -120,7 +120,7 @@ public static class ServicesExtensions
         serviceCollection.AddScoped<IRequestHandler<AddHotelCommand, bool>, AddHotelCommandHandler>();
         serviceCollection.AddScoped<IRequestHandler<BookingRoomCommand, bool>, BookingCommandHandler>();
         serviceCollection.AddScoped<IRequestHandler<ModifyBookingCommand, bool>, BookingCommandHandler>();
-        serviceCollection.AddScoped<IRequestHandler<AddHotelCommand, bool>, AddHotelCommandHandler>();
+        serviceCollection.AddScoped<IRequestHandler<CancelBookingCommand, bool>, BookingCommandHandler>();
 
         //Services
         serviceCollection.AddScoped<IBookingService, BookingService>();

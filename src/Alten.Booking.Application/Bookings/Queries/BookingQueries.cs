@@ -24,7 +24,6 @@ public class BookingQueries : IBookingQueries
 
     public async Task<IEnumerable<BookingViewModel>> Get(DateTime checkinDate, DateTime checkoutDate)
     {
-        return 
-        _mapper.Map<IEnumerable<BookingViewModel>>(await _bookingRepository.Get(checkinDate, checkoutDate));
+        return _mapper.Map<IEnumerable<BookingViewModel>>(await _bookingRepository.Get(checkinDate, checkoutDate));
     }
 }

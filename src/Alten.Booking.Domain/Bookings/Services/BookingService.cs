@@ -20,13 +20,13 @@ public class BookingService : IBookingService
         _roomRepository = roomRepository;
     }
 
-    public async Task BookingRoom(int roomId, int userId, DateTime startDate, DateTime endDate)
+    public async Task BookingRoom(int roomId, int userId, DateOnly checkinDate, DateOnly checkoutDate)
     {
-        var (checkinDate, checkoutDate) = AdjustPeriodDates(startDate, endDate);
-        var stayDuration = ValidateStayDuration(checkoutDate, checkinDate);
+        var (checkinDateTime, checkoutDateTime) = AdjustPeriodDates(checkinDate, checkoutDate);
+        var stayDuration = ValidateStayDuration(checkinDateTime, checkoutDateTime);
 
-        ValidateDaysToCheckin(checkinDate);
-        await ValidateRoomBooked(roomId, startDate, endDate);
+        ValidateDaysToCheckin(checkinDateTime);
+        await ValidateRoomBooked(checkinDateTime, checkoutDateTime, roomId);
 
         var user = await _userRepository.GetById(userId);
         if (user == null)
@@ -38,12 +38,10 @@ public class BookingService : IBookingService
 
         var booking = new Entities.Booking
         {
-            // User = user,
-            // Room = room,
             UserId = userId,
             RoomId = roomId,
-            CheckinDate = checkinDate,
-            CheckoutDate = checkoutDate,
+            CheckinDate = checkinDateTime,
+            CheckoutDate = checkoutDateTime,
             PricePerDay = room.PricePerDay,
             TotalPrice = room.PricePerDay * stayDuration.TotalDays,
             Active = true
@@ -53,23 +51,22 @@ public class BookingService : IBookingService
         await _bookingRepository.Commit();
     }
 
-    public async Task ModifyBooking(int id, int roomId, DateTime startDate, DateTime endDate)
+    public async Task ModifyBooking(int id, DateOnly checkinDate, DateOnly checkoutDate)
     {
-        var (checkinDate, checkoutDate) = AdjustPeriodDates(startDate, endDate);
-        var stayDuration = ValidateStayDuration(checkoutDate, checkinDate);
+        var (checkinDateTime, checkoutDateTime) = AdjustPeriodDates(checkinDate, checkoutDate);
+        var stayDuration = ValidateStayDuration(checkinDateTime, checkoutDateTime);
 
-        ValidateDaysToCheckin(checkinDate);
-        await ValidateRoomBooked(roomId, startDate, endDate);
-
+        ValidateDaysToCheckin(checkinDateTime);
+        
         var booking = await _bookingRepository.GetById(id);
-        if (booking == null)
+        if (booking is not { Active: true })
             throw new DomainException("Booking not found");
-
-        var room = await GetRoom(roomId);
-
-        booking.Room = room;
-        booking.CheckinDate = checkinDate;
-        booking.CheckoutDate = checkoutDate;
+        
+        await ValidateRoomBooked(checkinDateTime, checkoutDateTime, booking.RoomId, id);
+        var room = await GetRoom(booking.RoomId);
+        
+        booking.CheckinDate = checkinDateTime;
+        booking.CheckoutDate = checkoutDateTime;
         booking.TotalPrice = room.PricePerDay * stayDuration.TotalDays;
 
         _bookingRepository.Update(booking);
@@ -90,20 +87,22 @@ public class BookingService : IBookingService
 
     #region Private Methods
 
-    private static (DateTime checkinDate, DateTime checkoutDate) AdjustPeriodDates(DateTime startDate, DateTime endDate)
+    private static (DateTime checkinDateTime, DateTime checkoutDateTime) AdjustPeriodDates(DateOnly checkinDate,
+        DateOnly checkoutDate)
     {
-        var checkinDate = startDate.AddDays(1).Date + new TimeSpan(0, 0, 0);
-        var checkoutDate = endDate + new TimeSpan(23, 59, 59);
-        return (checkinDate, checkoutDate);
+        var checkinDateTime = checkinDate.ToDateTime(new TimeOnly(0, 0, 0));
+        var checkoutDateTime = checkoutDate.ToDateTime(new TimeOnly(23, 59, 59));
+        return (checkinDateTime, checkoutDateTime);
     }
 
-    private static TimeSpan ValidateStayDuration(DateTime checkoutDate, DateTime checkinDate)
+    private static TimeSpan ValidateStayDuration(DateTime checkinDate, DateTime checkoutDate)
     {
+        if (checkinDate <= DateTime.Now)
+            throw new DomainException("The check-in date can't be less or equal than current day");
+        
         var stayDuration = checkoutDate.Subtract(checkinDate);
-        if (stayDuration.TotalDays is < 1 or > 3)
-        {
+        if (stayDuration.Days is < 1 or > 3)
             throw new DomainException("The stay has to be at least 1 day and can't be longer than 3 days");
-        }
 
         return stayDuration;
     }
@@ -117,13 +116,13 @@ public class BookingService : IBookingService
         }
     }
 
-    private async Task ValidateRoomBooked(int roomId, DateTime startDate, DateTime endDate)
+    private async Task ValidateRoomBooked(DateTime startDate, DateTime endDate, int roomId, int? bookingId = null)
     {
-        var roomBooked = (await _bookingRepository.Get(roomId, startDate, endDate)).Any();
+        var bookings = await _bookingRepository.Get(roomId, startDate, endDate);
+        var roomBooked = bookings.Any(_ => (!bookingId.HasValue || _.Id != bookingId) && _.Active);
+
         if (roomBooked)
-        {
             throw new DomainException("Room booked");
-        }
     }
 
     private async Task<Room?> GetRoom(int roomId)

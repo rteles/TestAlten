@@ -4,16 +4,14 @@ namespace Alten.Booking.Application.Bookings.Commands;
 
 public class ModifyBookingCommand : Command
 {
-    public ModifyBookingCommand(int bookingId, int roomId, DateTime startDate, DateTime endDate)
+    public ModifyBookingCommand(int bookingId, DateTime checkinDate, DateTime checkoutDate)
     {
         BookingId = bookingId;
-        RoomId = roomId;
-        StartDate = startDate;
-        EndDate = endDate;
+        CheckinDate = checkinDate;
+        CheckoutDate = checkoutDate;
     }
 
     public int BookingId { get; }
-    public int RoomId { get; set; }
-    public DateTime StartDate { get; }
-    public DateTime EndDate { get; }
+    public DateTime CheckinDate { get; }
+    public DateTime CheckoutDate { get; }
 }

@@ -29,10 +29,11 @@ public class BookingsController : ControllerBase
         return result.Any() ? Ok(result) : NotFound();
     }
 
-    [HttpGet("{startDate}/{endDate}", Name = "GetBookingsByRangeDate")]
+    [HttpGet("{checkinDate}/{checkoutDate}", Name = "GetBookingsByRangeDate")]
     [ProducesResponseType(typeof(BookingViewModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> GetBookingsByRangeDate(DateTime checkinDate, DateTime checkoutDate)
+    public async Task<IActionResult> GetBookingsByRangeDate([FromRoute] DateTime checkinDate,
+        [FromRoute] DateTime checkoutDate)
     {
         var result = await _bookingQueries.Get(checkinDate, checkoutDate);
         return result.Any() ? Ok(result) : NotFound();
@@ -47,11 +48,14 @@ public class BookingsController : ControllerBase
         return result ? Ok() : BadRequest();
     }
 
-    [HttpPut(Name = "ModifyBooking")]
+    [HttpPut("{bookingId}", Name = "ModifyBooking")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> ModifyBooking([FromBody] ModifyBookingCommand modifyBookingCommand)
+    public async Task<IActionResult> ModifyBooking([FromRoute] int bookingId,
+        [FromBody] ModifyBookingViewModel modifyBookingViewModel)
     {
+        var modifyBookingCommand = new ModifyBookingCommand(bookingId, modifyBookingViewModel.CheckinDate,
+            modifyBookingViewModel.CheckoutDate);
         var result = await _mediatorHandler.SendCommand(modifyBookingCommand);
         return result ? Ok() : BadRequest();
     }
@@ -59,7 +63,7 @@ public class BookingsController : ControllerBase
     [HttpDelete("{id}", Name = "CancelBooking")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
-    public async Task<IActionResult> CancelBooking(int id)
+    public async Task<IActionResult> CancelBooking([FromRoute] int id)
     {
         var result = await _mediatorHandler.SendCommand(new CancelBookingCommand(id));
         return result ? Ok() : BadRequest();
